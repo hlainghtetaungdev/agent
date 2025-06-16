@@ -1,0 +1,408 @@
+/* ===== Golden Luxury Theme ===== */
+:root {
+  --gold-primary: #FFD700;
+  --gold-secondary: #D4AF37;
+  --gold-accent: #FFC72C;
+  --black-bg: #0a0a0a;
+  --darker-bg: #050505;
+  --text-primary: #ffffff;
+  --text-secondary: #e6e6e6;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--black-bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  position: relative;
+  overflow-x: hidden;
+  touch-action: manipulation;
+}
+
+/* Container with Gold Border */
+.container {
+  background: rgba(10, 10, 10, 0.9);
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  margin: 1rem auto;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+  border: 1px solid var(--gold-primary);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 215, 0, 0) 0%,
+    rgba(255, 215, 0, 0) 40%,
+    rgba(255, 215, 0, 0.1) 50%,
+    rgba(255, 215, 0, 0) 60%,
+    rgba(255, 215, 0, 0) 100%
+  );
+  transform: rotate(30deg);
+  animation: shine 8s infinite linear;
+}
+
+@keyframes shine {
+  0% { transform: rotate(30deg) translate(-10%, -10%); }
+  100% { transform: rotate(30deg) translate(10%, 10%); }
+}
+
+/* Header with Gold Glow */
+.header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.profile-pic {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--gold-primary);
+  box-shadow: 0 0 15px var(--gold-primary);
+  transition: transform 0.3s ease;
+}
+
+.profile-pic:hover {
+  transform: scale(1.05);
+}
+
+.pulse {
+  color: var(--gold-primary);
+  font-weight: 700;
+  font-size: 1.8rem;
+  text-shadow: 0 0 10px var(--gold-primary);
+  animation: pulse-glow 2s infinite alternate;
+  margin: 0.5rem 0;
+  letter-spacing: 1px;
+}
+
+@keyframes pulse-glow {
+  from { text-shadow: 0 0 10px var(--gold-primary); }
+  to { text-shadow: 0 0 25px var(--gold-accent); }
+}
+
+.bio {
+  font-weight: 300;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  max-width: 90%;
+}
+
+/* Links Grid with Gold Effects */
+.links {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.link-btn {
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 10px;
+  padding: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  font-size: 0.95rem;
+}
+
+.link-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 215, 0, 0) 0%,
+    rgba(255, 215, 0, 0) 40%,
+    rgba(255, 215, 0, 0.3) 50%,
+    rgba(255, 215, 0, 0) 60%,
+    rgba(255, 215, 0, 0) 100%
+  );
+  transform: rotate(30deg);
+  transition: all 0.7s ease;
+  opacity: 0;
+}
+
+.link-btn:hover::before {
+  opacity: 1;
+  animation: shine 1.5s infinite linear;
+}
+
+.link-btn img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 6px;
+  filter: drop-shadow(0 0 2px var(--gold-primary));
+}
+
+.link-btn span {
+  flex-grow: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.link-btn i {
+  color: var(--gold-primary);
+  font-size: 1rem;
+}
+
+.link-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+  border-color: var(--gold-primary);
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  border-top: 1px solid rgba(255, 215, 0, 0.2);
+  padding-top: 1rem;
+}
+
+.signature {
+  font-weight: 600;
+  color: var(--gold-primary);
+}
+
+/* Sponsors */
+.sponsor {
+  margin-top: 0.75rem;
+}
+
+.sponsor p {
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.sponsor-logos {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sponsor-logo, .partner-icon {
+  height: 35px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 2px var(--gold-primary));
+  transition: all 0.3s ease;
+}
+
+.sponsor-logo:hover, .partner-icon:hover {
+  filter: drop-shadow(0 0 6px var(--gold-accent));
+  transform: scale(1.05);
+}
+
+/* Install button */
+.download-btn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+  color: #000;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.download-btn:hover {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 0 20px 5px var(--gold-primary);
+}
+
+/* Update Notification */
+.update-notification {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: rgba(10, 10, 10, 0.95);
+  border: 1px solid var(--gold-accent);
+  border-radius: 8px;
+  padding: 15px;
+  width: calc(100% - 40px);
+  max-width: 300px;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  z-index: 100;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.5s ease;
+  backdrop-filter: blur(5px);
+}
+
+.update-notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.update-notification h3 {
+  color: var(--gold-accent);
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.update-notification p {
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+.update-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.update-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.update-now {
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+  color: #000;
+}
+
+.update-later {
+  background: transparent;
+  border: 1px solid var(--gold-primary);
+  color: var(--gold-primary);
+}
+
+.update-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+}
+
+/* Floating Orbs (Desktop only) */
+.orb {
+  display: none;
+}
+
+/* ===== Tablet Styles ===== */
+@media (min-width: 480px) {
+  .links {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  
+  .profile-pic {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .pulse {
+    font-size: 2rem;
+  }
+  
+  .bio {
+    font-size: 1rem;
+  }
+  
+  .link-btn {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+
+/* ===== Desktop Styles ===== */
+@media (min-width: 768px) {
+  .container {
+    padding: 2rem 3rem;
+  }
+  
+  .orb {
+    display: block;
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(15px);
+    opacity: 0.7;
+    z-index: -1;
+    animation: float linear infinite;
+  }
+  
+  @keyframes float {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(50px, 25px); }
+    50% { transform: translate(100px, 0); }
+    75% { transform: translate(50px, -25px); }
+    100% { transform: translate(0, 0); }
+  }
+  
+  .download-btn {
+    width: 56px;
+    height: 56px;
+    font-size: 1.8rem;
+  }
+  
+  .update-notification {
+    right: 24px;
+    bottom: 90px;
+  }
+}
+
+/* ===== Large Desktop Styles ===== */
+@media (min-width: 1024px) {
+  .links {
+    gap: 1.5rem;
+  }
+  
+  .link-btn {
+    padding: 1rem 1.25rem;
+  }
+}

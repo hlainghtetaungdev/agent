@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Time Table AG</title>
+  <link rel="icon" href="logo.png">
+  <style>
+    /* Golden palette colors with additional shades */
+    :root {
+      --gold-light: #fff8e1;
+      --gold-medium: #f5c518;
+      --gold-dark: #b8860b;
+      --gold-darker: #8a6d05;
+      --gold-border: #d4af37;
+      --gold-shadow: rgba(212, 175, 55, 0.3);
+      --text-dark: #3e2e00;
+      --text-light: #fff;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(245, 197, 24, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(245, 197, 24, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 197, 24, 0); }
+    }
+
+    body {
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      background: linear-gradient(-45deg, #fff8e1, #f5e8c1, #f5d8a1, #f5c888);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: var(--text-dark);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .header h1 {
+      color: var(--gold-darker);
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header p {
+      color: var(--gold-dark);
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .schedule-section {
+      margin-bottom: 40px;
+      border: 2px solid var(--gold-border);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px var(--gold-shadow);
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(5px);
+      transform: translateY(0);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeIn 0.8s ease-out;
+      animation-fill-mode: both;
+    }
+
+    .schedule-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px var(--gold-shadow);
+    }
+
+    .schedule-section:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .schedule-section:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .section-title {
+      background: linear-gradient(90deg, var(--gold-medium), var(--gold-dark));
+      color: white;
+      padding: 16px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-title::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(255, 255, 255, 0) 60%
+      );
+      transform: rotate(30deg);
+      animation: shine 5s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(30deg); }
+      20% { transform: translateX(100%) rotate(30deg); }
+      100% { transform: translateX(100%) rotate(30deg); }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1.05rem;
+    }
+
+    th, td {
+      border: 1px solid var(--gold-border);
+      padding: 12px 15px;
+      text-align: center;
+      color: var(--text-dark);
+      transition: all 0.2s ease;
+    }
+
+    th {
+      background: linear-gradient(to bottom, var(--gold-light), #f5e5b8);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      position: relative;
+    }
+
+    th::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--gold-medium);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    th:hover::after {
+      transform: scaleX(1);
+    }
+
+    tbody tr:hover {
+      background-color: rgba(255, 247, 193, 0.5);
+    }
+
+    tbody tr:hover td {
+      transform: scale(1.02);
+    }
+
+    th:first-child {
+      background: linear-gradient(to right, var(--gold-medium), var(--gold-dark));
+      color: white;
+      font-weight: 700;
+    }
+
+    .bottom-section {
+      display: flex;
+      justify-content: space-around;
+      padding: 25px 15px;
+      background: linear-gradient(to bottom, var(--gold-light), #f5e5b8);
+      flex-wrap: wrap;
+    }
+
+    .bottom-section > div {
+      flex: 1;
+      min-width: 200px;
+      margin: 10px;
+      border: 2px solid var(--gold-border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 10px var(--gold-shadow);
+      padding: 25px;
+      color: var(--gold-dark);
+      font-weight: 600;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .bottom-section > div:nth-child(1) {
+      animation-delay: 0s;
+    }
+    .bottom-section > div:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .bottom-section > div:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .bottom-section > div::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(to right, var(--gold-medium), var(--gold-dark));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .bottom-section > div:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 10px 20px var(--gold-shadow);
+    }
+
+    .bottom-section > div:hover::before {
+      transform: scaleX(1);
+    }
+
+    .bottom-section h3 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: var(--gold-dark);
+      text-align: center;
+      text-shadow: 0 1px 1px #d4af37cc;
+      position: relative;
+    }
+
+    .bottom-section p {
+      margin: 15px 0 0;
+      font-size: 1.2rem;
+      text-align: center;
+      color: var(--text-dark);
+      font-weight: 500;
+    }
+
+    .floating-elements {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .floating-element {
+      position: absolute;
+      background: rgba(245, 197, 24, 0.15);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .bottom-section {
+        flex-direction: column;
+      }
+      
+      .bottom-section > div {
+        margin: 10px 0;
+      }
+      
+      table {
+        font-size: 0.9rem;
+      }
+      
+      th, td {
+        padding: 8px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Weekly  Post Schedule</h1>
+    <p>Your daily post plan for the week with Betting Paradise.</p>
+  </div>
+
+  <div class="floating-elements">
+    <div class="floating-element" style="width: 100px; height: 100px; top: 20%; left: 10%; animation-delay: 0s;"></div>
+    <div class="floating-element" style="width: 150px; height: 150px; top: 60%; left: 80%; animation-delay: 1s;"></div>
+    <div class="floating-element" style="width: 80px; height: 80px; top: 30%; left: 50%; animation-delay: 2s;"></div>
+    <div class="floating-element" style="width: 120px; height: 120px; top: 70%; left: 30%; animation-delay: 3s;"></div>
+  </div>
+
+  <div class="schedule-section">
+    <h2 class="section-title">မနက်ပိုင်း</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Hours / Dates</th>
+          <th>6 / 8 နာရီ</th>
+          <th>8 / 10 နာရီ</th>
+          <th>10 / 12 နာရီ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Mon</th>
+          <td>Morning Post</td>
+          <td>မနက်ခင်းကြေး</td>
+          <td>ယူနစ်ထုတ်</td>
+        </tr>
+        <tr>
+          <th>Tue</th>
+          <td>Morning Post</td>
+          <td>မနက်ခင်းကြေး</td>
+          <td>ယူနစ်ထုတ်</td>
+        </tr>
+        <tr>
+          <th>Wed</th>
+          <td>Morning Post</td>
+          <td>မနက်ခင်းကြေး</td>
+          <td>ခန့်မှန်းချက် / Batman</td>
+        </tr>
+        <tr>
+          <th>Thu</th>
+          <td>Morning Post</td>
+          <td>မနက်ခင်းကြေး</td>
+          <td>ယူနစ်ထုတ်</td>
+        </tr>
+        <tr>
+          <th>Fri</th>
+          <td>Morning Post</td>
+          <td>မနက်ခင်းကြေး</td>
+          <td>ခန့်မှန်းချက် / ကံစမ်းမဲပို့စ်</td>
+        </tr>
+        <tr>
+          <th>Sat</th>
+          <td>Morning Post</td>
+          <td>မနက်ခင်းကြေး</td>
+          <td>ကံစမ်းမဲပို့စ်</td>
+        </tr>
+        <tr>
+          <th>Sun</th>
+          <td>Morning Post</td>
+          <td>မနက်ခင်းကြေး</td>
+          <td>ကံစမ်းမဲပို့စ်</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="schedule-section">
+    <h2 class="section-title">နေ့လည်ပိုင်း</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Hours / Dates</th>
+          <th>2 / 4 နာရီ</th>
+          <th>4 / 6 နာရီ</th>
+          <th>6 / 8 နာရီ</th>
+          <th>8 / 9 နာရီ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Mon</th>
+          <td>Other post</td>
+          <td>ညနေကြေး</td>
+          <td>ယူနစ်ဖြည့်</td>
+          <td>Entertainment / Lineup</td>
+        </tr>
+        <tr>
+          <th>Tue</th>
+          <td>Batman</td>
+          <td>ညနေကြေး</td>
+          <td>ယူနစ်ဖြည့်</td>
+          <td>Entertainment / Lineup</td>
+        </tr>
+        <tr>
+          <th>Wed</th>
+          <td>Ads</td>
+          <td>ညနေကြေး</td>
+          <td>ယူနစ်ဖြည့်</td>
+          <td>Entertainment / Lineup</td>
+        </tr>
+        <tr>
+          <th>Thu</th>
+          <td>Batman</td>
+          <td>ညနေကြေး</td>
+          <td>ယူနစ်ဖြည့်</td>
+          <td>Entertainment / Lineup</td>
+        </tr>
+        <tr>
+          <th>Fri</th>
+          <td>Ads</td>
+          <td>ညနေကြေး</td>
+          <td>ယူနစ်ဖြည့်</td>
+          <td>Entertainment / Lineup</td>
+        </tr>
+        <tr>
+          <th>Sat</th>
+          <td>ယနေ့ပွဲများအကြောင်း</td>
+          <td>ညနေကြေး</td>
+          <td>ယူနစ်ဖြည့်</td>
+          <td>Entertainment / Lineup</td>
+        </tr>
+        <tr>
+          <th>Sun</th>
+          <td>ယနေ့ပွဲများအကြောင်း</td>
+          <td>ညနေကြေး</td>
+          <td>ယူနစ်ဖြည့်</td>
+          <td>Entertainment / Lineup</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="schedule-section">
+    <h2 class="section-title">ညပိုင်း</h2>
+    <div class="bottom-section">
+      <div>
+        <h3>9 နာရီ</h3>
+        <p>New Acc</p>
+      </div>
+      <div>
+        <h3>10 နာရီ</h3>
+        <p>Total Units</p>
+      </div>
+      <div>
+        <h3>11 နာရီ</h3>
+        <p>Active Now</p>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+</html>
