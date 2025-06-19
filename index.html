@@ -922,6 +922,174 @@ Answer (in Burmese):`;
             });
         }
     });
+    document.addEventListener('DOMContentLoaded', () => {
+    const installButton = document.getElementById('install-btn');
+    const updateNotification = document.getElementById('updateNotification');
+    const updateNowButton = document.getElementById('updateNow');
+    const updateLaterButton = document.getElementById('updateLater');
+
+    // LLM Assistant Elements
+    const agentQueryInput = document.getElementById('agentQuery');
+    const askAgentBtn = document.getElementById('askAgentBtn');
+    const assistantResponseDiv = document.getElementById('assistantResponse');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+
+    let deferredPrompt; // To store the BeforeInstallPromptEvent
+
+    // --- PWA Installation Logic ---
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+        // Update UI to notify the user they can add to home screen
+        if (installButton) {
+            installButton.style.display = 'flex'; // Show the install button
+            // Optionally add a class to trigger an animation or highlight
+            setTimeout(() => {
+                installButton.classList.add('show');
+            }, 100); // Small delay for CSS transition
+        }
+    });
+
+    if (installButton) {
+        installButton.addEventListener('click', () => {
+            if (deferredPrompt) {
+                // Show the prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the A2HS prompt');
+                        // Hide the button after installation
+                        if (installButton) {
+                            installButton.classList.remove('show');
+                            installButton.style.display = 'none';
+                        }
+                    } else {
+                        console.log('User dismissed the A2HS prompt');
+                    }
+                    deferredPrompt = null; // Clear the deferred prompt
+                });
+            }
+        });
+    }
+
+    window.addEventListener('appinstalled', () => {
+        console.log('PWA was installed');
+        // Hide the install button if it was shown
+        if (installButton) {
+            installButton.classList.remove('show');
+            installButton.style.display = 'none';
+        }
+    });
+
+    // --- Update Notification Logic (Placeholder - in a real app, this would come from a server check) ---
+    // Simulate an update being available after 5 seconds
+    // setTimeout(() => {
+    //     if (updateNotification) {
+    //         updateNotification.classList.add('show');
+    //     }
+    // }, 5000);
+
+    if (updateNowButton) {
+        updateNowButton.addEventListener('click', () => {
+            console.log('Update Now clicked');
+            // In a real app, this would trigger a service worker update or page reload
+            location.reload(true); // Force reload to get new content
+        });
+    }
+
+    if (updateLaterButton) {
+        updateLaterButton.addEventListener('click', () => {
+            console.log('Update Later clicked');
+            if (updateNotification) {
+                updateNotification.classList.remove('show');
+            }
+        });
+    }
+
+    // --- Floating Orbs Animation (Desktop only) ---
+    const orbsContainer = document.getElementById('orbs');
+    if (orbsContainer) {
+        // Create 5 orbs for visual effect
+        for (let i = 0; i < 5; i++) {
+            const orb = document.createElement('div');
+            orb.classList.add('orb');
+            // Randomize initial position and size
+            orb.style.width = `${Math.random() * 30 + 40}px`; // 40-70px
+            orb.style.height = orb.style.width;
+            orb.style.left = `${Math.random() * 100}vw`;
+            orb.style.top = `${Math.random() * 100}vh`;
+            // Randomize animation delay and duration for a more natural feel
+            orb.style.animationDelay = `${Math.random() * -10}s`; // Start at different phases
+            orb.style.animationDuration = `${Math.random() * 8 + 10}s`; // 10-18s duration
+            orbsContainer.appendChild(orb);
+        }
+    }
+
+
+    // --- LLM Agent Assistant Logic ---
+    if (askAgentBtn) {
+        askAgentBtn.addEventListener('click', async () => {
+            const userQuery = agentQueryInput.value.trim();
+            if (!userQuery) {
+                assistantResponseDiv.textContent = "Please enter a question for the assistant.";
+                assistantResponseDiv.style.color = "var(--gold-accent)"; // Highlight message
+                return;
+            }
+
+            // Clear previous response and show loading
+            assistantResponseDiv.textContent = "";
+            loadingIndicator.style.display = 'block';
+            askAgentBtn.disabled = true; // Disable button during API call
+            assistantResponseDiv.style.color = "var(--text-secondary)"; // Reset color
+
+            try {
+                // Construct the prompt for the LLM
+                // Instruct the LLM to act as a helpful agent assistant for a betting portal.
+                const prompt = `As a helpful agent assistant for a premium betting portal, provide a concise and professional answer to the following question. Focus on clarity and directness, avoiding overly technical jargon unless necessary for accuracy. If the question is outside the scope of general agent knowledge or betting terms, politely state that you cannot assist with that specific query.
+
+Question: "${userQuery}"
+
+Answer:`;
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Canvas will automatically provide the API key
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    assistantResponseDiv.textContent = text;
+                } else {
+                    assistantResponseDiv.textContent = "Sorry, I couldn't generate a response. Please try again.";
+                    console.error("Gemini API response structure unexpected:", result);
+                }
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                assistantResponseDiv.textContent = "An error occurred while connecting to the assistant. Please try again later.";
+                assistantResponseDiv.style.color = "red"; // Indicate error
+            } finally {
+                loadingIndicator.style.display = 'none'; // Hide loading
+                askAgentBtn.disabled = false; // Re-enable button
+            }
+        });
+    }
+});
+
   </script>
 </body>
 </html>
